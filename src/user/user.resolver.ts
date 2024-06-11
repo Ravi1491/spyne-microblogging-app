@@ -54,6 +54,32 @@ export class UserResolver {
   }
 
   @Public()
+  @Query('getAllUsers')
+  async getAllUsers(@Args('filter') filter: GetPaginatedFilter) {
+    try {
+      const { offset, limit, createdAtOrder } = getPaginationFilters(filter);
+
+      const { total, rows } = await this.userService.findAndCountAll(
+        {},
+        {
+          order: [['createdAt', createdAtOrder]],
+          offset,
+          limit,
+        },
+      );
+
+      return {
+        total,
+        offset,
+        limit,
+        users: rows,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Public()
   @Mutation('signup')
   async signup(
     @Args('signUpInput') createUserInput: CreateUserInput,

@@ -31,6 +31,7 @@ input UpdateUserInput {
 
 type Query {
   user(id: String!): User
+  getAllUsers(filter: GetPaginatedFilter): UserSearchPaginatedResponse
   searchUsers(
     query: String!
     filter: GetPaginatedFilter
