@@ -6,6 +6,13 @@ export const applicationConfig = {
     port: process.env.PORT,
   },
 
+  jwt: {
+    secret: process.env.SERVER_AUTH_JWT_SECRET || 'server-secret',
+    cookieKey: 'spyne_jwt_key',
+    expiresIn: process.env.JWT_EXPIRES_IN || '1d',
+    issuer: process.env.JWT_ISSUER || 'spyne',
+  },
+
   // Database
   db: {
     dbDialect: process.env.DB_DIALECT || 'postgres',

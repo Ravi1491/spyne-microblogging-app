@@ -7,6 +7,10 @@ import { SequelizeModule } from '@nestjs/sequelize';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver } from '@nestjs/apollo';
+import { join } from 'path';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -34,9 +38,24 @@ import { AppService } from './app.service';
       database: applicationConfig.db.name,
       logging: false,
       autoLoadModels: true,
-      // synchronize: true,
-      // sync: { alter: true },
+      synchronize: true,
+      sync: { alter: true },
     }),
+    GraphQLModule.forRoot({
+      driver: ApolloDriver,
+      debug: true,
+      playground: applicationConfig.app.env !== 'base',
+      typePaths: ['./**/*.graphql'],
+      definitions: {
+        path: join(process.cwd(), 'src/graphql.ts'),
+      },
+      context: ({ req, res }) => {
+        return { req, res };
+      },
+      synchronize: true,
+      fieldResolverEnhancers: ['guards'],
+    }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

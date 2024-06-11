@@ -1,0 +1,26 @@
+scalar Date
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  mobileNumber: String!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+input SignUpInput {
+  name: String!
+  email: String!
+  mobileNumber: String!
+  password: String!
+}
+
+type Query {
+  user(id: String!): User
+}
+
+type Mutation {
+  signup(signUpInput: SignUpInput!): User!
+  login(email: String!, password: String!): User!
+}
