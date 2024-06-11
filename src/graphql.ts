@@ -13,6 +13,13 @@ export enum Order {
     DESC = "DESC"
 }
 
+export interface CreateDiscussionInput {
+    title: string;
+    text: string;
+    imageUrl?: Nullable<string>;
+    hashtags?: Nullable<string[]>;
+}
+
 export interface GetPaginatedFilter {
     offset?: Nullable<number>;
     limit?: Nullable<number>;
@@ -32,14 +39,28 @@ export interface UpdateUserInput {
     mobileNumber?: Nullable<string>;
 }
 
-export interface FollowerPaginatedResponse {
+export interface Discussion {
+    id: string;
+    title: string;
+    text: string;
+    user: User;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface DiscussionSearchPaginatedResponse {
     offset: number;
     limit: number;
     total: number;
-    followers: User[];
+    discussions: Discussion[];
 }
 
 export interface IQuery {
+    getDiscussion(id: string): Discussion | Promise<Discussion>;
+    getAllDiscussions(filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
+    getUserDiscussions(userId: string, filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
+    getHashtagDiscussions(hashtag: string, filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
+    searchDiscussions(query: string, filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
     getUserFollowers(filter?: Nullable<GetPaginatedFilter>): Nullable<FollowerPaginatedResponse> | Promise<Nullable<FollowerPaginatedResponse>>;
     user(id: string): Nullable<User> | Promise<Nullable<User>>;
     getAllUsers(filter?: Nullable<GetPaginatedFilter>): Nullable<UserSearchPaginatedResponse> | Promise<Nullable<UserSearchPaginatedResponse>>;
@@ -47,12 +68,21 @@ export interface IQuery {
 }
 
 export interface IMutation {
+    createDiscussion(createDiscussionInput: CreateDiscussionInput): Discussion | Promise<Discussion>;
+    removeDiscussion(id: string): string | Promise<string>;
     followUser(followingUserId: string): string | Promise<string>;
     unfollowUser(followingUserId: string): string | Promise<string>;
     signup(signUpInput: SignUpInput): User | Promise<User>;
     login(email: string, password: string): User | Promise<User>;
     updateUser(updateUserInput?: Nullable<UpdateUserInput>): User | Promise<User>;
     deleteUser(id: string): string | Promise<string>;
+}
+
+export interface FollowerPaginatedResponse {
+    offset: number;
+    limit: number;
+    total: number;
+    followers: User[];
 }
 
 export interface User {

@@ -1,0 +1,50 @@
+type Discussion {
+  id: String!
+  title: String!
+  text: String!
+  user: User!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type DiscussionSearchPaginatedResponse {
+  offset: Int!
+  limit: Int!
+  total: Int!
+  discussions: [Discussion!]!
+}
+
+input CreateDiscussionInput {
+  title: String!
+  text: String!
+  imageUrl: String
+  hashtags: [String!]
+}
+
+type Query {
+  getDiscussion(id: String!): Discussion!
+
+  getAllDiscussions(
+    filter: GetPaginatedFilter
+  ): DiscussionSearchPaginatedResponse
+
+  getUserDiscussions(
+    userId: String!
+    filter: GetPaginatedFilter
+  ): DiscussionSearchPaginatedResponse
+
+  getHashtagDiscussions(
+    hashtag: String!
+    filter: GetPaginatedFilter
+  ): DiscussionSearchPaginatedResponse
+
+  searchDiscussions(
+    query: String!
+    filter: GetPaginatedFilter
+  ): DiscussionSearchPaginatedResponse
+}
+
+type Mutation {
+  createDiscussion(createDiscussionInput: CreateDiscussionInput!): Discussion!
+  removeDiscussion(id: String!): String!
+}

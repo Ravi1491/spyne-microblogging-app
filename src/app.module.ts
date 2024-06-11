@@ -15,6 +15,7 @@ import { UserFollowerModule } from './user-follower/user-follower.module';
 import { JwtService } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
+import { DiscussionModule } from './discussion/discussion.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
     }),
     UserModule,
     UserFollowerModule,
+    DiscussionModule,
   ],
   controllers: [AppController],
   providers: [
