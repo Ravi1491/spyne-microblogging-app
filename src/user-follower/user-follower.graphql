@@ -1,0 +1,26 @@
+type FollowerPaginatedResponse {
+  offset: Int!
+  limit: Int!
+  total: Int!
+  followers: [User!]!
+}
+
+enum Order {
+  ASC
+  DESC
+}
+
+input GetPaginatedFilter {
+  offset: Int
+  limit: Int
+  createdAtOrder: Order
+}
+
+type Query {
+  getUserFollowers(filter: GetPaginatedFilter): FollowerPaginatedResponse
+}
+
+type Mutation {
+  followUser(followingUserId: String!): String!
+  unfollowUser(followingUserId: String!): String!
+}

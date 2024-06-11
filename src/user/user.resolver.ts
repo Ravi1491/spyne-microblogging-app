@@ -7,6 +7,7 @@ import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { Public } from 'src/auth/decorators/public';
 import { generateJwtToken } from 'src/utils/jwt';
+import { Op } from 'sequelize';
 
 @Resolver('User')
 export class UserResolver {
@@ -21,11 +22,14 @@ export class UserResolver {
     try {
       const { res } = context;
       const user = await this.userService.findOne({
-        email: createUserInput.email,
+        [Op.or]: [
+          { email: createUserInput.email },
+          { mobileNumber: createUserInput.mobileNumber },
+        ],
       });
 
       if (user) {
-        throw new Error('User already exist');
+        throw new Error('User already exist with this email or mobile number');
       }
 
       const hashPassword = await hash(

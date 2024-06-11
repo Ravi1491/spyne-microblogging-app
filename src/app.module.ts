@@ -11,6 +11,10 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver } from '@nestjs/apollo';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
+import { UserFollowerModule } from './user-follower/user-follower.module';
+import { JwtService } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 @Module({
   imports: [
@@ -56,8 +60,16 @@ import { UserModule } from './user/user.module';
       fieldResolverEnhancers: ['guards'],
     }),
     UserModule,
+    UserFollowerModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    JwtService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
