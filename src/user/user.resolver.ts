@@ -11,11 +11,47 @@ import { Op } from 'sequelize';
 import { UpdateUserInput } from './dto/update-user.input';
 import { CurrentUser } from 'src/auth/decorators/current-user';
 import { User } from './entities/user.entity';
-import { isNilOrEmpty, isPresent } from 'src/utils/helper';
+import {
+  getPaginationFilters,
+  isNilOrEmpty,
+  isPresent,
+} from 'src/utils/helper';
+import { GetPaginatedFilter } from 'src/utils/type';
 
 @Resolver('User')
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
+
+  @Public()
+  @Query('searchUsers')
+  async searchUsers(
+    @Args('query') query: string,
+    @Args('filter') filter: GetPaginatedFilter,
+  ) {
+    try {
+      const { offset, limit, createdAtOrder } = getPaginationFilters(filter);
+
+      const { total, rows } = await this.userService.findAndCountAll(
+        {
+          name: { [Op.iLike]: `%${query}%` },
+        },
+        {
+          order: [['createdAt', createdAtOrder]],
+          offset,
+          limit,
+        },
+      );
+
+      return {
+        total,
+        offset,
+        limit,
+        users: rows,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 
   @Public()
   @Mutation('signup')

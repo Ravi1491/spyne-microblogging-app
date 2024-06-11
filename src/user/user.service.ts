@@ -43,4 +43,13 @@ export class UserService {
       where: condition,
     });
   }
+
+  async findAndCountAll(payload = {}, options = {}) {
+    const { count, rows } = await this.userModel.findAndCountAll({
+      where: payload,
+      ...options,
+    });
+
+    return { total: count, rows };
+  }
 }

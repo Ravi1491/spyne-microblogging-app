@@ -9,6 +9,13 @@ type User {
   updatedAt: Date!
 }
 
+type UserSearchPaginatedResponse {
+  offset: Int!
+  limit: Int!
+  total: Int!
+  users: [User!]!
+}
+
 input SignUpInput {
   name: String!
   email: String!
@@ -24,6 +31,10 @@ input UpdateUserInput {
 
 type Query {
   user(id: String!): User
+  searchUsers(
+    query: String!
+    filter: GetPaginatedFilter
+  ): UserSearchPaginatedResponse
 }
 
 type Mutation {

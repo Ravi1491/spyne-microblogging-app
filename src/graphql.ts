@@ -42,6 +42,7 @@ export interface FollowerPaginatedResponse {
 export interface IQuery {
     getUserFollowers(filter?: Nullable<GetPaginatedFilter>): Nullable<FollowerPaginatedResponse> | Promise<Nullable<FollowerPaginatedResponse>>;
     user(id: string): Nullable<User> | Promise<Nullable<User>>;
+    searchUsers(query: string, filter?: Nullable<GetPaginatedFilter>): Nullable<UserSearchPaginatedResponse> | Promise<Nullable<UserSearchPaginatedResponse>>;
 }
 
 export interface IMutation {
@@ -60,6 +61,13 @@ export interface User {
     mobileNumber: string;
     createdAt: Date;
     updatedAt: Date;
+}
+
+export interface UserSearchPaginatedResponse {
+    offset: number;
+    limit: number;
+    total: number;
+    users: User[];
 }
 
 type Nullable<T> = T | null;
