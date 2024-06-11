@@ -26,6 +26,12 @@ export interface SignUpInput {
     password: string;
 }
 
+export interface UpdateUserInput {
+    name?: Nullable<string>;
+    email?: Nullable<string>;
+    mobileNumber?: Nullable<string>;
+}
+
 export interface FollowerPaginatedResponse {
     offset: number;
     limit: number;
@@ -43,6 +49,8 @@ export interface IMutation {
     unfollowUser(followingUserId: string): string | Promise<string>;
     signup(signUpInput: SignUpInput): User | Promise<User>;
     login(email: string, password: string): User | Promise<User>;
+    updateUser(updateUserInput?: Nullable<UpdateUserInput>): User | Promise<User>;
+    deleteUser(id: string): string | Promise<string>;
 }
 
 export interface User {

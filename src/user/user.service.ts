@@ -37,4 +37,10 @@ export class UserService {
       returning: true,
     });
   }
+
+  async delete(condition = {}) {
+    return this.userModel.destroy({
+      where: condition,
+    });
+  }
 }
