@@ -40,7 +40,7 @@ type Query {
     filter: GetPaginatedFilter
   ): DiscussionSearchPaginatedResponse
 
-  getHashtagDiscussions(
+  getDiscussionByHashtag(
     hashtag: String!
     filter: GetPaginatedFilter
   ): DiscussionSearchPaginatedResponse

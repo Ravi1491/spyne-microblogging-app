@@ -18,12 +18,16 @@ import { Public } from 'src/auth/decorators/public';
 import { Op } from 'sequelize';
 import { Discussion } from './entities/discussion.entity';
 import { UpdateDiscussionInput } from './dto/update-discussion.input';
+import { HashtagService } from './hashtag/hashtag.service';
+import { DiscussionHashTagService } from './discussion-hashtag.service';
 
 @Resolver('Discussion')
 export class DiscussionResolver {
   constructor(
     private readonly discussionService: DiscussionService,
     private readonly userService: UserService,
+    private readonly hashtagService: HashtagService,
+    private readonly discussionHashTagService: DiscussionHashTagService,
   ) {}
 
   @Query('getAllDiscussions')
@@ -112,18 +116,33 @@ export class DiscussionResolver {
     }
   }
 
-  @Public()
-  @Query('getHashtagDiscussions')
-  async getHashtagDiscussions(
+  @Query('getDiscussionByHashtag')
+  async getDiscussionByHashtag(
     @Args('hashtag') hashtag: string,
     @Args('filter') filter: GetPaginatedFilter,
   ) {
     try {
       const { offset, limit, createdAtOrder } = getPaginationFilters(filter);
 
+      const hashtagExists = await this.hashtagService.findOne({
+        name: hashtag,
+      });
+
+      if (!hashtagExists) {
+        throw new Error('Hashtag does not exist');
+      }
+
+      const discussionHashtags = await this.discussionHashTagService.find({
+        hashtagId: hashtagExists.id,
+      });
+
       const { total, rows } = await this.discussionService.findAndCountAll(
         {
-          name: { [Op.iLike]: `%${hashtag}%` },
+          id: {
+            [Op.in]: discussionHashtags.map((discussionHashtag) => {
+              return discussionHashtag.discussionId;
+            }),
+          },
         },
         {
           order: [['createdAt', createdAtOrder]],
@@ -162,7 +181,41 @@ export class DiscussionResolver {
 
       createDiscussionInput.userId = user.id;
 
-      return this.discussionService.create(createDiscussionInput);
+      const discussion = await this.discussionService.create(
+        createDiscussionInput,
+      );
+
+      if (createDiscussionInput.hashtags) {
+        await Promise.all(
+          createDiscussionInput.hashtags.map(async (name) => {
+            const hashtag = await this.hashtagService.findOne({ name });
+
+            if (hashtag) {
+              const existingDiscussionHashtag =
+                await this.discussionHashTagService.findOne({
+                  discussionId: discussion.id,
+                  hashtagId: hashtag.id,
+                });
+
+              if (!existingDiscussionHashtag) {
+                await this.discussionHashTagService.create({
+                  discussionId: discussion.id,
+                  hashtagId: hashtag.id,
+                });
+              }
+            } else {
+              const newHashtag = await this.hashtagService.create({ name });
+
+              await this.discussionHashTagService.create({
+                discussionId: discussion.id,
+                hashtagId: newHashtag.id,
+              });
+            }
+          }),
+        );
+      }
+
+      return discussion;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

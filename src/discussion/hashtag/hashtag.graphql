@@ -1,0 +1,20 @@
+type Hashtag {
+  id: String!
+  name: String!
+}
+
+type HashtagPaginatedResponse {
+  offset: Int!
+  limit: Int!
+  total: Int!
+  hashtags: [Hashtag!]!
+}
+
+type Query {
+  getAllHashtags(filter: GetPaginatedFilter): HashtagPaginatedResponse
+}
+
+type Mutation {
+  createHashtag(name: String!): Hashtag!
+  removeHashtag(id: String!): String!
+}

@@ -18,6 +18,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
 import { DiscussionModule } from './discussion/discussion.module';
 import { DiscussionLikeModule } from './discussion-like/discussion-like.module';
 import { CommentModule } from './comment/comment.module';
+import { HashtagModule } from './discussion/hashtag/hashtag.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { CommentModule } from './comment/comment.module';
     DiscussionModule,
     DiscussionLikeModule,
     CommentModule,
+    HashtagModule,
   ],
   controllers: [AppController],
   providers: [
