@@ -18,6 +18,7 @@ import { DiscussionModule } from './discussion/discussion.module';
 import { DiscussionLikeModule } from './discussion-like/discussion-like.module';
 import { CommentModule } from './comment/comment.module';
 import { AuthModule } from './auth/auth.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { AuthModule } from './auth/auth.module';
       fieldResolverEnhancers: ['guards'],
     }),
     AuthModule,
+    CommonModule,
     UserFollowerModule,
     DiscussionModule,
     DiscussionLikeModule,
