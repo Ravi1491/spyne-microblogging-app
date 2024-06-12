@@ -1,4 +1,11 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { DiscussionService } from './discussion.service';
 import { CreateDiscussionInput } from './dto/create-discussion.input';
 import { HttpException, HttpStatus } from '@nestjs/common';
@@ -9,6 +16,8 @@ import { GetPaginatedFilter } from 'src/utils/type';
 import { getPaginationFilters } from 'src/utils/helper';
 import { Public } from 'src/auth/decorators/public';
 import { Op } from 'sequelize';
+import { Discussion } from './entities/discussion.entity';
+import { UpdateDiscussionInput } from './dto/update-discussion.input';
 
 @Resolver('Discussion')
 export class DiscussionResolver {
@@ -159,6 +168,36 @@ export class DiscussionResolver {
     }
   }
 
+  @Mutation('updateDiscussion')
+  async update(
+    @Args('id') id: string,
+    @Args('updateDiscussionInput') updateDiscussionInput: UpdateDiscussionInput,
+    @CurrentUser('user') currentUser: User,
+  ) {
+    try {
+      const user = this.userService.findOne({ id: currentUser.id });
+
+      if (!user) {
+        throw new Error('User does not exist');
+      }
+
+      const discussion = this.discussionService.findOne({ id });
+
+      if (!discussion) {
+        throw new Error('Discussion does not exist');
+      }
+
+      const updatedDiscussion = await this.discussionService.update(
+        { id },
+        updateDiscussionInput,
+      );
+
+      return updatedDiscussion[1][0];
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   @Mutation('removeDiscussion')
   remove(@Args('id') id: string, @CurrentUser('user') currentUser: User) {
     try {
@@ -178,5 +217,10 @@ export class DiscussionResolver {
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @ResolveField()
+  async user(@Parent() parent: Discussion) {
+    return this.userService.findOne({ id: parent.userId });
   }
 }

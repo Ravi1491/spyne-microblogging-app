@@ -1,0 +1,50 @@
+type DiscussionLike {
+  id: String!
+  type: LikeType!
+  entityType: LikeEntityType!
+  discussion: Discussion!
+  user: User!
+}
+
+type DiscussionLikePaginationResponse {
+  total: Int!
+  limit: Int!
+  offset: Int!
+  likes: [DiscussionLike!]!
+}
+
+enum LikeEntityType {
+  DISCUSSION
+  COMMENT
+}
+
+enum LikeType {
+  LIKE
+  DISLIKE
+}
+
+input CreateDiscussionLikeInput {
+  type: LikeType!
+  discussionId: String
+}
+
+input CreateCommentLikeInput {
+  type: LikeType!
+  discussionId: String
+}
+
+type Query {
+  getDiscussionLike(
+    discussionId: String!
+    filter: GetPaginatedFilter
+  ): DiscussionLikePaginationResponse!
+}
+
+type Mutation {
+  createDiscussionLikeDisLike(
+    createDiscussionLikeInput: CreateDiscussionLikeInput!
+  ): DiscussionLike!
+  createCommentLikeDisLike(
+    createCommentLikeInput: CreateCommentLikeInput!
+  ): DiscussionLike!
+}

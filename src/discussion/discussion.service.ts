@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateDiscussionInput } from './dto/create-discussion.input';
 import { Discussion } from './entities/discussion.entity';
 import { InjectModel } from '@nestjs/sequelize';
+import { UpdateDiscussionInput } from './dto/update-discussion.input';
 
 @Injectable()
 export class DiscussionService {
@@ -32,6 +33,14 @@ export class DiscussionService {
     return this.DiscussionModel.destroy({
       where: condition,
       ...options,
+    });
+  }
+
+  async update(condition = {}, payload: UpdateDiscussionInput, options = {}) {
+    return this.DiscussionModel.update(payload, {
+      where: condition,
+      ...options,
+      returning: true,
     });
   }
 

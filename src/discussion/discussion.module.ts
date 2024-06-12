@@ -8,5 +8,6 @@ import { UserModule } from 'src/user/user.module';
 @Module({
   imports: [SequelizeModule.forFeature([Discussion]), UserModule],
   providers: [DiscussionResolver, DiscussionService],
+  exports: [DiscussionService],
 })
 export class DiscussionModule {}

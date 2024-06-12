@@ -16,6 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { DiscussionModule } from './discussion/discussion.module';
+import { DiscussionLikeModule } from './discussion-like/discussion-like.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { DiscussionModule } from './discussion/discussion.module';
     UserModule,
     UserFollowerModule,
     DiscussionModule,
+    DiscussionLikeModule,
   ],
   controllers: [AppController],
   providers: [

@@ -21,6 +21,13 @@ input CreateDiscussionInput {
   hashtags: [String!]
 }
 
+input UpdateDiscussionInput {
+  title: String
+  text: String
+  imageUrl: String
+  hashtags: [String!]
+}
+
 type Query {
   getDiscussion(id: String!): Discussion!
 
@@ -46,5 +53,9 @@ type Query {
 
 type Mutation {
   createDiscussion(createDiscussionInput: CreateDiscussionInput!): Discussion!
+  updateDiscussion(
+    id: String!
+    updateDiscussionInput: UpdateDiscussionInput!
+  ): Discussion!
   removeDiscussion(id: String!): String!
 }
