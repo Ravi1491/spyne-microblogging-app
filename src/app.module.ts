@@ -4,21 +4,20 @@ import { Dialect } from 'sequelize';
 import { applicationConfig } from 'config';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
-
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver } from '@nestjs/apollo';
 import { join } from 'path';
-import { UserModule } from './user/user.module';
-import { UserFollowerModule } from './user-follower/user-follower.module';
 import { JwtService } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
+
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { UserFollowerModule } from './user-follower/user-follower.module';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { DiscussionModule } from './discussion/discussion.module';
 import { DiscussionLikeModule } from './discussion-like/discussion-like.module';
 import { CommentModule } from './comment/comment.module';
-import { HashtagModule } from './discussion/hashtag/hashtag.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -63,12 +62,11 @@ import { HashtagModule } from './discussion/hashtag/hashtag.module';
       synchronize: true,
       fieldResolverEnhancers: ['guards'],
     }),
-    UserModule,
+    AuthModule,
     UserFollowerModule,
     DiscussionModule,
     DiscussionLikeModule,
     CommentModule,
-    HashtagModule,
   ],
   controllers: [AppController],
   providers: [

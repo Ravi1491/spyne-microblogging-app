@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateHashtagInput } from './dto/create-hashtag.input';
 import { InjectModel } from '@nestjs/sequelize';
 import { Hashtag } from './entities/hashtag.entity';
 
@@ -10,7 +9,7 @@ export class HashtagService {
     private HashtagModel: typeof Hashtag,
   ) {}
 
-  create(createHashtagInput: CreateHashtagInput) {
+  create(createHashtagInput: { name: string }) {
     return this.HashtagModel.create(createHashtagInput);
   }
 

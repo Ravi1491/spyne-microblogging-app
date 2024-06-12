@@ -101,8 +101,6 @@ export interface IMutation {
     createDiscussion(createDiscussionInput: CreateDiscussionInput): Discussion | Promise<Discussion>;
     updateDiscussion(id: string, updateDiscussionInput: UpdateDiscussionInput): Discussion | Promise<Discussion>;
     removeDiscussion(id: string): string | Promise<string>;
-    createHashtag(name: string): Hashtag | Promise<Hashtag>;
-    removeHashtag(id: string): string | Promise<string>;
     followUser(followingUserId: string): string | Promise<string>;
     unfollowUser(followingUserId: string): string | Promise<string>;
     signup(signUpInput: SignUpInput): User | Promise<User>;
@@ -133,7 +131,6 @@ export interface IQuery {
     getUserDiscussions(userId: string, filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
     getDiscussionByHashtag(hashtag: string, filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
     searchDiscussions(query: string, filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
-    getAllHashtags(filter?: Nullable<GetPaginatedFilter>): Nullable<HashtagPaginatedResponse> | Promise<Nullable<HashtagPaginatedResponse>>;
     getUserFollowers(filter?: Nullable<GetPaginatedFilter>): Nullable<FollowerPaginatedResponse> | Promise<Nullable<FollowerPaginatedResponse>>;
     user(id: string): Nullable<User> | Promise<Nullable<User>>;
     getAllUsers(filter?: Nullable<GetPaginatedFilter>): Nullable<UserSearchPaginatedResponse> | Promise<Nullable<UserSearchPaginatedResponse>>;
@@ -145,6 +142,7 @@ export interface Discussion {
     title: string;
     text: string;
     user: User;
+    hashtags?: Nullable<string[]>;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -154,18 +152,6 @@ export interface DiscussionSearchPaginatedResponse {
     limit: number;
     total: number;
     discussions: Discussion[];
-}
-
-export interface Hashtag {
-    id: string;
-    name: string;
-}
-
-export interface HashtagPaginatedResponse {
-    offset: number;
-    limit: number;
-    total: number;
-    hashtags: Hashtag[];
 }
 
 export interface FollowerPaginatedResponse {

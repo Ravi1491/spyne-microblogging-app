@@ -5,16 +5,21 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Discussion } from './entities/discussion.entity';
 import { UserModule } from 'src/user/user.module';
 import { DiscussionHashtag } from './entities/discussion-hashtag.entity';
-import { HashtagModule } from './hashtag/hashtag.module';
 import { DiscussionHashTagService } from './discussion-hashtag.service';
+import { Hashtag } from './entities/hashtag.entity';
+import { HashtagService } from './hashtag.service';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Discussion, DiscussionHashtag]),
+    SequelizeModule.forFeature([Discussion, Hashtag, DiscussionHashtag]),
     UserModule,
-    HashtagModule,
   ],
-  providers: [DiscussionResolver, DiscussionService, DiscussionHashTagService],
+  providers: [
+    DiscussionResolver,
+    DiscussionService,
+    HashtagService,
+    DiscussionHashTagService,
+  ],
   exports: [DiscussionService],
 })
 export class DiscussionModule {}

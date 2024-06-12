@@ -18,7 +18,7 @@ import { Public } from 'src/auth/decorators/public';
 import { Op } from 'sequelize';
 import { Discussion } from './entities/discussion.entity';
 import { UpdateDiscussionInput } from './dto/update-discussion.input';
-import { HashtagService } from './hashtag/hashtag.service';
+import { HashtagService } from './hashtag.service';
 import { DiscussionHashTagService } from './discussion-hashtag.service';
 
 @Resolver('Discussion')
@@ -275,5 +275,32 @@ export class DiscussionResolver {
   @ResolveField()
   async user(@Parent() parent: Discussion) {
     return this.userService.findOne({ id: parent.userId });
+  }
+
+  @ResolveField()
+  async hashtags(@Parent() parent: Discussion) {
+    try {
+      const discussionHashtags = await this.discussionHashTagService.find({
+        discussionId: parent.id,
+      });
+
+      if (!discussionHashtags.length) {
+        return [];
+      }
+
+      const hashtags = await Promise.all(
+        discussionHashtags.map(async (discussionHashtag) => {
+          const hashtag = await this.hashtagService.findOne({
+            id: discussionHashtag.hashtagId,
+          });
+
+          return hashtag.name;
+        }),
+      );
+
+      return hashtags;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }
