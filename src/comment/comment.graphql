@@ -1,0 +1,31 @@
+type Comment {
+  id: String!
+  content: String!
+  type: CommentType!
+  discussion: Discussion!
+  parentComment: Comment
+  user: User!
+}
+
+enum CommentType {
+  COMMENT
+  REPLY
+}
+
+input CreateCommentInput {
+  content: String!
+  type: CommentType!
+  discussionId: String!
+  parentCommentId: String
+}
+
+input UpdateCommentInput {
+  id: String!
+  content: String!
+}
+
+type Mutation {
+  createComment(createCommentInput: CreateCommentInput!): Comment!
+  updateComment(updateCommentInput: UpdateCommentInput!): Comment!
+  removeComment(id: String!): String!
+}

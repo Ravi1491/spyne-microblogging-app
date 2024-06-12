@@ -17,6 +17,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { DiscussionModule } from './discussion/discussion.module';
 import { DiscussionLikeModule } from './discussion-like/discussion-like.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { DiscussionLikeModule } from './discussion-like/discussion-like.module';
     UserFollowerModule,
     DiscussionModule,
     DiscussionLikeModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [

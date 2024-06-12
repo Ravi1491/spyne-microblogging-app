@@ -12,3 +12,8 @@ export enum LikeType {
   LIKE = 'LIKE',
   DISLIKE = 'DISLIKE',
 }
+
+export enum CommentType {
+  COMMENT = 'COMMENT',
+  REPLY = 'REPLY',
+}

@@ -8,6 +8,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export enum CommentType {
+    COMMENT = "COMMENT",
+    REPLY = "REPLY"
+}
+
 export enum LikeEntityType {
     DISCUSSION = "DISCUSSION",
     COMMENT = "COMMENT"
@@ -21,6 +26,18 @@ export enum LikeType {
 export enum Order {
     ASC = "ASC",
     DESC = "DESC"
+}
+
+export interface CreateCommentInput {
+    content: string;
+    type: CommentType;
+    discussionId: string;
+    parentCommentId?: Nullable<string>;
+}
+
+export interface UpdateCommentInput {
+    id: string;
+    content: string;
 }
 
 export interface CreateDiscussionLikeInput {
@@ -66,6 +83,32 @@ export interface UpdateUserInput {
     mobileNumber?: Nullable<string>;
 }
 
+export interface Comment {
+    id: string;
+    content: string;
+    type: CommentType;
+    discussion: Discussion;
+    parentComment?: Nullable<Comment>;
+    user: User;
+}
+
+export interface IMutation {
+    createComment(createCommentInput: CreateCommentInput): Comment | Promise<Comment>;
+    updateComment(updateCommentInput: UpdateCommentInput): Comment | Promise<Comment>;
+    removeComment(id: string): string | Promise<string>;
+    createDiscussionLikeDisLike(createDiscussionLikeInput: CreateDiscussionLikeInput): DiscussionLike | Promise<DiscussionLike>;
+    createCommentLikeDisLike(createCommentLikeInput: CreateCommentLikeInput): DiscussionLike | Promise<DiscussionLike>;
+    createDiscussion(createDiscussionInput: CreateDiscussionInput): Discussion | Promise<Discussion>;
+    updateDiscussion(id: string, updateDiscussionInput: UpdateDiscussionInput): Discussion | Promise<Discussion>;
+    removeDiscussion(id: string): string | Promise<string>;
+    followUser(followingUserId: string): string | Promise<string>;
+    unfollowUser(followingUserId: string): string | Promise<string>;
+    signup(signUpInput: SignUpInput): User | Promise<User>;
+    login(email: string, password: string): User | Promise<User>;
+    updateUser(updateUserInput?: Nullable<UpdateUserInput>): User | Promise<User>;
+    deleteUser(id: string): string | Promise<string>;
+}
+
 export interface DiscussionLike {
     id: string;
     type: LikeType;
@@ -92,20 +135,6 @@ export interface IQuery {
     user(id: string): Nullable<User> | Promise<Nullable<User>>;
     getAllUsers(filter?: Nullable<GetPaginatedFilter>): Nullable<UserSearchPaginatedResponse> | Promise<Nullable<UserSearchPaginatedResponse>>;
     searchUsers(query: string, filter?: Nullable<GetPaginatedFilter>): Nullable<UserSearchPaginatedResponse> | Promise<Nullable<UserSearchPaginatedResponse>>;
-}
-
-export interface IMutation {
-    createDiscussionLikeDisLike(createDiscussionLikeInput: CreateDiscussionLikeInput): DiscussionLike | Promise<DiscussionLike>;
-    createCommentLikeDisLike(createCommentLikeInput: CreateCommentLikeInput): DiscussionLike | Promise<DiscussionLike>;
-    createDiscussion(createDiscussionInput: CreateDiscussionInput): Discussion | Promise<Discussion>;
-    updateDiscussion(id: string, updateDiscussionInput: UpdateDiscussionInput): Discussion | Promise<Discussion>;
-    removeDiscussion(id: string): string | Promise<string>;
-    followUser(followingUserId: string): string | Promise<string>;
-    unfollowUser(followingUserId: string): string | Promise<string>;
-    signup(signUpInput: SignUpInput): User | Promise<User>;
-    login(email: string, password: string): User | Promise<User>;
-    updateUser(updateUserInput?: Nullable<UpdateUserInput>): User | Promise<User>;
-    deleteUser(id: string): string | Promise<string>;
 }
 
 export interface Discussion {
