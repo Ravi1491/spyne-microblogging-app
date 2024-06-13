@@ -1,73 +1,85 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# MicroBlogging App
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project implements a backend system with various functionalities for user management and discussion posts.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### Hosted Server Url
 
-## Description
+Url: https://spyne-microblogging-app.onrender.com
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Table of Contents
 
-## Installation
+- [Features](#features)
+- [Setup Instructions](#setup-instructions)
+- [Database Schema](#database-schema)
+- [Low-Level Design](#low-level-design)
+- [Postman Collection](#postman-collection)
 
-```bash
-$ npm install
-```
+## Features
 
-## Running the app
+### User Management
 
-```bash
-# development
-$ npm run start
+- Add users with fields: Name, Mobile No (unique), Email (unique)
+- Login/Signup
+- Search users by name
+- Follow other users
+- Update user details
+- Delete users
+- Show list of users
 
-# watch mode
-$ npm run start:dev
+### Discussion Management
 
-# production mode
-$ npm run start:prod
-```
+- Post a discussion with fields: Text, Image, Hashtags, Created On
+- Update/Delete discussions
+- Comment or like on posts
+- Like or reply to comments
+- Search posts by text or hashtags
 
-## Test
+### Functionalities
 
-```bash
-# unit tests
-$ npm run test
+1. Users can login/signup.
+2. Users can search for other users.
+3. Users can follow other users.
+4. Users can post (only text or Image + Text).
+5. Other users can comment or like on posts.
+6. Users can like a comment or reply on the comment.
+7. Users can delete or modify posts.
+8. Users can delete or modify comments.
+9. Users can see the view count of a post.
+10. Users can search for posts using hashtags.
 
-# e2e tests
-$ npm run test:e2e
+## Setup Instructions
 
-# test coverage
-$ npm run test:cov
-```
+1. **Clone the repository**:
 
-## Support
+   ```bash
+   git clone https://github.com/Ravi1491/spyne-microblogging-app
+   cd spyne-microblogging-app
+   ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+2. **Install dependencies**:
 
-## Stay in touch
+   ```bash
+   npm install
+   ```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+3. **Set up environment variables**:
+   Create a `.env` file in the root directory and add the required environment variables (e.g., database connection strings).
 
-## License
+4. **Run the application**:
+   ```bash
+   npm run start:dev
+   ```
 
-Nest is [MIT licensed](LICENSE).
+## Database Schema
+
+Database Schema: https://dbdiagram.io/d/Spyne-6668a8546bc9d447b170556a
+
+## Low-Level Design
+
+LLD Doc Link: https://docs.google.com/document/d/16JDaakuLjwyuK-trWAE8uhUHtZpvp15vHE_MFIsgRzw/edit?usp=sharing
+
+## Postman Collection
+
+For testing the APIs, a Postman collection has been created. You can import it using the following public link:
+
+API Documentation or Postman Collection Link: https://www.postman.com/orange-robot-324607/workspace/spyne-microbloging-app
