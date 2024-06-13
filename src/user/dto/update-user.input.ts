@@ -1,5 +1,12 @@
+import { IsOptional } from 'class-validator';
+
 export class UpdateUserInput {
-  name?: string;
-  email?: string;
-  mobileNumber?: string;
+  @IsOptional()
+  name: string;
+
+  @IsOptional()
+  email: string;
+
+  @IsOptional()
+  mobileNumber: string;
 }

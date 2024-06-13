@@ -13,5 +13,6 @@ import { Comment } from './entities/comment.entity';
     UserModule,
   ],
   providers: [CommentResolver, CommentService],
+  exports: [CommentService],
 })
 export class CommentModule {}

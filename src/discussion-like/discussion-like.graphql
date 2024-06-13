@@ -2,7 +2,8 @@ type DiscussionLike {
   id: String!
   type: LikeType!
   entityType: LikeEntityType!
-  discussion: Discussion!
+  discussion: Discussion
+  comment: Comment
   user: User!
 }
 
@@ -25,17 +26,22 @@ enum LikeType {
 
 input CreateDiscussionLikeInput {
   type: LikeType!
-  discussionId: String
+  discussionId: String!
 }
 
 input CreateCommentLikeInput {
   type: LikeType!
-  discussionId: String
+  commentId: String!
 }
 
 type Query {
-  getDiscussionLike(
+  getDiscussionLikeDisLike(
     discussionId: String!
+    filter: GetPaginatedFilter
+  ): DiscussionLikePaginationResponse!
+
+  getCommentLikeDisLike(
+    commentId: String!
     filter: GetPaginatedFilter
   ): DiscussionLikePaginationResponse!
 }

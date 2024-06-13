@@ -58,14 +58,14 @@ export class DiscussionResolver {
   @Query('getUserDiscussions')
   async getUserDiscussions(
     @Args('filter') filter: GetPaginatedFilter,
-    @Args('userId') userId: string,
+    @CurrentUser('user') currentUser: User,
   ) {
     try {
       const { offset, limit, createdAtOrder } = getPaginationFilters(filter);
 
       const { total, rows } = await this.discussionService.findAndCountAll(
         {
-          userId,
+          userId: currentUser.id,
         },
         {
           order: [['createdAt', createdAtOrder]],
@@ -163,8 +163,14 @@ export class DiscussionResolver {
   }
 
   @Query('getDiscussion')
-  findOne(@Args('id') id: string) {
-    return this.discussionService.findOne({ id });
+  async findOne(@Args('id') id: string) {
+    const discussion = await this.discussionService.findOne({ id });
+
+    if (!discussion) {
+      throw new Error('Discussion does not exist');
+    }
+
+    return discussion;
   }
 
   @Mutation('createDiscussion')
@@ -228,13 +234,13 @@ export class DiscussionResolver {
     @CurrentUser('user') currentUser: User,
   ) {
     try {
-      const user = this.userService.findOne({ id: currentUser.id });
+      const user = await this.userService.findOne({ id: currentUser.id });
 
       if (!user) {
         throw new Error('User does not exist');
       }
 
-      const discussion = this.discussionService.findOne({ id });
+      const discussion = await this.discussionService.findOne({ id });
 
       if (!discussion) {
         throw new Error('Discussion does not exist');
@@ -252,21 +258,23 @@ export class DiscussionResolver {
   }
 
   @Mutation('removeDiscussion')
-  remove(@Args('id') id: string, @CurrentUser('user') currentUser: User) {
+  async remove(@Args('id') id: string, @CurrentUser('user') currentUser: User) {
     try {
-      const user = this.userService.findOne({ id: currentUser.id });
+      const user = await this.userService.findOne({ id: currentUser.id });
 
       if (!user) {
         throw new Error('User does not exist');
       }
 
-      const discussion = this.discussionService.findOne({ id });
+      const discussion = await this.discussionService.findOne({ id });
 
       if (!discussion) {
         throw new Error('Discussion does not exist');
       }
 
-      return this.discussionService.delete({ id });
+      await this.discussionService.delete({ id });
+
+      return 'Discussion deleted successfully';
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

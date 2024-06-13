@@ -1,9 +1,9 @@
 import { LikeEntityType } from 'src/graphql';
 import { LikeType } from 'src/utils/enum';
 
-export class CreateDiscussionLikeInput {
+export class CreateCommentLikeInput {
   type: LikeType;
   entityType: LikeEntityType;
-  discussionId: string;
+  commentId: string;
   userId: string;
 }

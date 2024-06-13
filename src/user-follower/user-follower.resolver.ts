@@ -51,7 +51,7 @@ export class UserFollowerResolver {
   @Mutation('followUser')
   async followUser(
     @Args('followingUserId') followingUserId: string,
-    @CurrentUser('user') user: User,
+    @CurrentUser('user') currentUser: User,
   ) {
     try {
       const userExist = await this.userService.findOne({ id: followingUserId });
@@ -60,8 +60,12 @@ export class UserFollowerResolver {
         throw new Error('User does not exist');
       }
 
+      if (followingUserId === currentUser.id) {
+        throw new Error('You cannot follow yourself');
+      }
+
       const isFollowing = await this.userFollowerService.findOne({
-        followerId: user.id,
+        followerId: currentUser.id,
         followingId: followingUserId,
       });
 
@@ -70,7 +74,7 @@ export class UserFollowerResolver {
       }
 
       await this.userFollowerService.create({
-        followerId: user.id,
+        followerId: currentUser.id,
         followingId: followingUserId,
       });
 
@@ -83,7 +87,7 @@ export class UserFollowerResolver {
   @Mutation('unfollowUser')
   async unfollowUser(
     @Args('followingUserId') followingUserId: string,
-    @CurrentUser('user') user: User,
+    @CurrentUser('user') currentUser: User,
   ) {
     try {
       const userExist = await this.userService.findOne({ id: followingUserId });
@@ -92,8 +96,12 @@ export class UserFollowerResolver {
         throw new Error('User does not exist');
       }
 
+      if (followingUserId === currentUser.id) {
+        throw new Error('You cannot unfollow yourself');
+      }
+
       const isFollowing = await this.userFollowerService.findOne({
-        followerId: user.id,
+        followerId: currentUser.id,
         followingId: followingUserId,
       });
 
@@ -102,7 +110,7 @@ export class UserFollowerResolver {
       }
 
       await this.userFollowerService.delete({
-        followerId: user.id,
+        followerId: currentUser.id,
         followingId: followingUserId,
       });
 

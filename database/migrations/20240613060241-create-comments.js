@@ -30,7 +30,7 @@ module.exports = {
       },
       parent_comment_id: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'comments',
           key: 'id',

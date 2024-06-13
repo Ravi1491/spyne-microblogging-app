@@ -36,6 +36,14 @@ export class CommentResolver {
         throw new Error('User does not exist');
       }
 
+      const discussion = await this.discussionService.findOne({
+        id: createCommentInput.discussionId,
+      });
+
+      if (!discussion) {
+        throw new Error('Discussion does not exist');
+      }
+
       if (createCommentInput.type === CommentType.COMMENT) {
         const existingComment = await this.commentService.findOne({
           type: CommentType.COMMENT,
@@ -90,6 +98,15 @@ export class CommentResolver {
 
       if (!comment) {
         throw new Error('Comment does not exist');
+      }
+
+      const commentOwner = await this.commentService.findOne({
+        id: updateCommentInput.id,
+        userId: user.id,
+      });
+
+      if (!commentOwner) {
+        throw new Error('User is not the owner of the comment');
       }
 
       const updatedComment = await this.commentService.update(

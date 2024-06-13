@@ -42,12 +42,12 @@ export interface UpdateCommentInput {
 
 export interface CreateDiscussionLikeInput {
     type: LikeType;
-    discussionId?: Nullable<string>;
+    discussionId: string;
 }
 
 export interface CreateCommentLikeInput {
     type: LikeType;
-    discussionId?: Nullable<string>;
+    commentId: string;
 }
 
 export interface CreateDiscussionInput {
@@ -105,7 +105,7 @@ export interface IMutation {
     unfollowUser(followingUserId: string): string | Promise<string>;
     signup(signUpInput: SignUpInput): User | Promise<User>;
     login(email: string, password: string): User | Promise<User>;
-    updateUser(updateUserInput?: Nullable<UpdateUserInput>): User | Promise<User>;
+    updateUser(updateUserInput: UpdateUserInput): User | Promise<User>;
     deleteUser(id: string): string | Promise<string>;
 }
 
@@ -113,7 +113,8 @@ export interface DiscussionLike {
     id: string;
     type: LikeType;
     entityType: LikeEntityType;
-    discussion: Discussion;
+    discussion?: Nullable<Discussion>;
+    comment?: Nullable<Comment>;
     user: User;
 }
 
@@ -125,10 +126,11 @@ export interface DiscussionLikePaginationResponse {
 }
 
 export interface IQuery {
-    getDiscussionLike(discussionId: string, filter?: Nullable<GetPaginatedFilter>): DiscussionLikePaginationResponse | Promise<DiscussionLikePaginationResponse>;
+    getDiscussionLikeDisLike(discussionId: string, filter?: Nullable<GetPaginatedFilter>): DiscussionLikePaginationResponse | Promise<DiscussionLikePaginationResponse>;
+    getCommentLikeDisLike(commentId: string, filter?: Nullable<GetPaginatedFilter>): DiscussionLikePaginationResponse | Promise<DiscussionLikePaginationResponse>;
     getDiscussion(id: string): Discussion | Promise<Discussion>;
     getAllDiscussions(filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
-    getUserDiscussions(userId: string, filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
+    getUserDiscussions(filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
     getDiscussionByHashtag(hashtag: string, filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
     searchDiscussions(query: string, filter?: Nullable<GetPaginatedFilter>): Nullable<DiscussionSearchPaginatedResponse> | Promise<Nullable<DiscussionSearchPaginatedResponse>>;
     getUserFollowers(filter?: Nullable<GetPaginatedFilter>): Nullable<FollowerPaginatedResponse> | Promise<Nullable<FollowerPaginatedResponse>>;

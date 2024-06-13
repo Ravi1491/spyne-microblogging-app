@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateDiscussionLikeInput } from './dto/create-discussion-like.input';
 import { InjectModel } from '@nestjs/sequelize';
 import { DiscussionLike } from './entities/discussion-like.entity';
+import { CreateCommentLikeInput } from './dto/create-comment-like.input';
 
 @Injectable()
 export class DiscussionLikeService {
@@ -10,7 +11,11 @@ export class DiscussionLikeService {
     private DiscussionLikeModel: typeof DiscussionLike,
   ) {}
 
-  create(createDiscussionLikeInput: CreateDiscussionLikeInput) {
+  create(
+    createDiscussionLikeInput:
+      | CreateDiscussionLikeInput
+      | CreateCommentLikeInput,
+  ) {
     return this.DiscussionLikeModel.create(createDiscussionLikeInput);
   }
 

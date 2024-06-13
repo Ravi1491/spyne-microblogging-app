@@ -20,7 +20,7 @@ module.exports = {
         },
         onDelete: 'CASCADE',
       },
-      followering_id: {
+      following_id: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {

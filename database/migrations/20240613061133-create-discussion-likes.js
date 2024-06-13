@@ -21,7 +21,7 @@ module.exports = {
       },
       discussion_id: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'discussions',
           key: 'id',
@@ -30,7 +30,7 @@ module.exports = {
       },
       comment_id: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'comments',
           key: 'id',

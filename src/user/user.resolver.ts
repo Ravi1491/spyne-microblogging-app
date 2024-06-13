@@ -11,11 +11,7 @@ import { Op } from 'sequelize';
 import { UpdateUserInput } from './dto/update-user.input';
 import { CurrentUser } from 'src/auth/decorators/current-user';
 import { User } from './entities/user.entity';
-import {
-  getPaginationFilters,
-  isNilOrEmpty,
-  isPresent,
-} from 'src/utils/helper';
+import { getPaginationFilters, isPresent } from 'src/utils/helper';
 import { GetPaginatedFilter } from 'src/utils/type';
 
 @Resolver('User')
@@ -177,23 +173,9 @@ export class UserResolver {
     @CurrentUser('user') currentUser: User,
   ) {
     try {
-      if (
-        isNilOrEmpty(updateUserInput.name) &&
-        isNilOrEmpty(updateUserInput.email) &&
-        isNilOrEmpty(updateUserInput.mobileNumber)
-      ) {
-        throw new Error('Please provide at least one field to update');
-      }
-
-      const updateUserPayload: {
-        name?: string;
-        email?: string;
-        mobileNumber?: string;
-      } = {};
-
-      if (isPresent(updateUserInput.name)) {
-        updateUserPayload.name = updateUserInput.name;
-      }
+      const user = await this.userService.findOne({
+        id: currentUser.id,
+      });
 
       if (isPresent(updateUserInput.email)) {
         const user = await this.userService.findOne({
@@ -203,8 +185,6 @@ export class UserResolver {
         if (user && currentUser.id !== user.id) {
           throw new Error('User already exist with this email');
         }
-
-        updateUserPayload.email = updateUserInput.email;
       }
 
       if (isPresent(updateUserInput.mobileNumber)) {
@@ -215,13 +195,11 @@ export class UserResolver {
         if (user && currentUser.id !== user.id) {
           throw new Error('User already exist with this mobile number');
         }
-
-        updateUserPayload.mobileNumber = updateUserInput.mobileNumber;
       }
 
       const updatedUser = await this.userService.update(
-        { id: currentUser.id },
-        updateUserPayload,
+        { id: user.id },
+        updateUserInput,
       );
 
       if (updatedUser[0] === 0) {
@@ -235,17 +213,17 @@ export class UserResolver {
   }
 
   @Mutation('deleteUser')
-  async delete(@CurrentUser('user') currentUser: User): Promise<string> {
+  async delete(@Args('id') id: string): Promise<string> {
     try {
       const user = await this.userService.findOne({
-        id: currentUser.id,
+        id,
       });
 
       if (!user) {
         throw new Error('User does not exist');
       }
 
-      await this.userService.delete({ id: currentUser.id });
+      await this.userService.delete({ id });
 
       return 'User deleted successfully';
     } catch (error) {

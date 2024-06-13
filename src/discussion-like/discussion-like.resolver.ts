@@ -17,12 +17,15 @@ import { DiscussionService } from 'src/discussion/discussion.service';
 import { UserService } from 'src/user/user.service';
 import { GetPaginatedFilter } from 'src/utils/type';
 import { getPaginationFilters } from 'src/utils/helper';
+import { CommentService } from 'src/comment/comment.service';
+import { CreateCommentLikeInput } from './dto/create-comment-like.input';
 
 @Resolver('DiscussionLike')
 export class DiscussionLikeResolver {
   constructor(
     private readonly discussionLikeService: DiscussionLikeService,
     private readonly discussionService: DiscussionService,
+    private readonly commentService: CommentService,
     private readonly userService: UserService,
   ) {}
 
@@ -34,6 +37,14 @@ export class DiscussionLikeResolver {
   ) {
     try {
       const { type, discussionId } = createDiscussionLikeInput;
+
+      const discussion = await this.discussionService.findOne({
+        id: discussionId,
+      });
+
+      if (!discussion) {
+        throw new Error('Discussion does not exist');
+      }
 
       const existingLike = await this.discussionLikeService.findOne({
         userId: currentUser.id,
@@ -68,17 +79,54 @@ export class DiscussionLikeResolver {
 
   @Mutation('createCommentLikeDisLike')
   async deleteDiscussionLike(
-    @Args('id') id: string,
+    @Args('createCommentLikeInput')
+    createCommentLikeInput: CreateCommentLikeInput,
     @CurrentUser('user') currentUser: User,
   ) {
     try {
-      console.log('id', id);
-      console.log(' ', currentUser.id);
-    } catch (error) {}
+      const { type, commentId } = createCommentLikeInput;
+
+      const discussion = await this.commentService.findOne({
+        id: commentId,
+      });
+
+      if (!discussion) {
+        throw new Error('Comment does not exist');
+      }
+
+      const existingLike = await this.discussionLikeService.findOne({
+        userId: currentUser.id,
+        entityType: LikeEntityType.COMMENT,
+        commentId,
+      });
+
+      if (existingLike) {
+        // If the existing like type is the same as the new one, we do nothing or return an error.
+        if (existingLike.type === type) {
+          throw new Error(
+            `You have already ${type === LikeType.LIKE ? 'liked' : 'disliked'} this comment.`,
+          );
+        }
+
+        // If the existing like type is different, remove it before adding the new one.
+        await this.discussionLikeService.delete({
+          userId: currentUser.id,
+          entityType: LikeEntityType.COMMENT,
+          commentId,
+        });
+      }
+
+      createCommentLikeInput.userId = currentUser.id;
+      createCommentLikeInput.entityType = LikeEntityType.COMMENT;
+
+      return this.discussionLikeService.create(createCommentLikeInput);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  @Query('getDiscussionLike')
-  async getDiscussionLike(
+  @Query('getDiscussionLikeDisLike')
+  async getDiscussionLikeDisLike(
     @Args('discussionId') discussionId: string,
     @Args('filter') filter: GetPaginatedFilter,
   ) {
@@ -88,7 +136,6 @@ export class DiscussionLikeResolver {
       const { total, rows } = await this.discussionLikeService.findAndCountAll(
         {
           discussionId,
-          type: LikeType.LIKE,
         },
         {
           order: [['createdAt', createdAtOrder]],
@@ -103,28 +150,53 @@ export class DiscussionLikeResolver {
         limit,
         likes: rows,
       };
-    } catch (error) {}
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  // @ResolveField()
-  // async likeCount(@Parent() parent: DiscussionLike) {
-  //   return this.discussionLikeService.count({
-  //     entityType: parent.entityType,
-  //     type: LikeType.LIKE,
-  //   });
-  // }
+  @Query('getCommentLikeDisLike')
+  async getCommentLikeDisLike(
+    @Args('commentId') commentId: string,
+    @Args('filter') filter: GetPaginatedFilter,
+  ) {
+    try {
+      const { offset, limit, createdAtOrder } = getPaginationFilters(filter);
 
-  // @ResolveField()
-  // async dislikeCount(@Parent() parent: DiscussionLike) {
-  //   return this.discussionLikeService.count({
-  //     entityType: parent.entityType,
-  //     type: LikeType.DISLIKE,
-  //   });
-  // }
+      const { total, rows } = await this.discussionLikeService.findAndCountAll(
+        {
+          commentId,
+        },
+        {
+          order: [['createdAt', createdAtOrder]],
+          offset,
+          limit,
+        },
+      );
+
+      return {
+        total,
+        offset,
+        limit,
+        likes: rows,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 
   @ResolveField()
   async discussion(@Parent() parent: DiscussionLike) {
+    if (parent.entityType === LikeEntityType.COMMENT) return null;
+
     return this.discussionService.findOne({ id: parent.discussionId });
+  }
+
+  @ResolveField()
+  async comment(@Parent() parent: DiscussionLike) {
+    if (parent.entityType === LikeEntityType.DISCUSSION) return null;
+
+    return this.commentService.findOne({ id: parent.commentId });
   }
 
   @ResolveField()
