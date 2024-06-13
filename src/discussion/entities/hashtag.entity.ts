@@ -3,11 +3,13 @@ import {
   CreatedAt,
   DataType,
   DeletedAt,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
   UpdatedAt,
 } from 'sequelize-typescript';
+import { DiscussionHashtag } from './discussion-hashtag.entity';
 
 @Table({
   underscored: true,
@@ -31,4 +33,7 @@ export class Hashtag extends Model<Hashtag> {
 
   @DeletedAt
   deletedAt: Date;
+
+  @HasMany(() => DiscussionHashtag, 'hashtagId')
+  discussions: DiscussionHashtag[];
 }

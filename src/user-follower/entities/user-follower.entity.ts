@@ -1,13 +1,16 @@
 import {
+  BelongsTo,
   Column,
   CreatedAt,
   DataType,
   DeletedAt,
+  ForeignKey,
   Model,
   PrimaryKey,
   Table,
   UpdatedAt,
 } from 'sequelize-typescript';
+import { User } from 'src/user/entities/user.entity';
 
 @Table({
   underscored: true,
@@ -20,9 +23,11 @@ export class UserFollower extends Model<UserFollower> {
   })
   id: string;
 
+  @ForeignKey(() => User)
   @Column({ allowNull: false })
   followerId: string;
 
+  @ForeignKey(() => User)
   @Column({ allowNull: false })
   followingId: string;
 
@@ -34,4 +39,10 @@ export class UserFollower extends Model<UserFollower> {
 
   @DeletedAt
   deletedAt: Date;
+
+  @BelongsTo(() => User)
+  follower: User;
+
+  @BelongsTo(() => User)
+  following: User;
 }

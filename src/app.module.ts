@@ -46,8 +46,6 @@ import { CommonModule } from './common/common.module';
       database: applicationConfig.db.name,
       logging: false,
       autoLoadModels: true,
-      synchronize: true,
-      sync: { alter: true },
     }),
     GraphQLModule.forRoot({
       driver: ApolloDriver,

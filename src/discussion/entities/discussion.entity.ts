@@ -1,13 +1,19 @@
 import {
+  BelongsTo,
   Column,
   CreatedAt,
   DataType,
   DeletedAt,
+  ForeignKey,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
   UpdatedAt,
 } from 'sequelize-typescript';
+import { Comment } from 'src/comment/entities/comment.entity';
+import { DiscussionLike } from 'src/discussion-like/entities/discussion-like.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Table({
   underscored: true,
@@ -29,6 +35,7 @@ export class Discussion extends Model<Discussion> {
   @Column({ allowNull: true })
   imageUrl: string;
 
+  @ForeignKey(() => User)
   @Column({ allowNull: false })
   userId: string;
 
@@ -40,4 +47,13 @@ export class Discussion extends Model<Discussion> {
 
   @DeletedAt
   deletedAt: Date;
+
+  @BelongsTo(() => User)
+  user: User;
+
+  @HasMany(() => Comment, 'discussionId')
+  comments: Comment[];
+
+  @HasMany(() => DiscussionLike, 'discussionId')
+  likes: DiscussionLike[];
 }
